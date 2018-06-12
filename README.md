@@ -29,4 +29,5 @@ two exemplary images are included in this repository in 'src/main/resources' so 
 String filename = "/tmp/LibAPR-java-wrapper/src/main/resources/zebra.h5";
 ```
 
+Example visualization with excellent [bigdataviewer-vistools](https://github.com/bigdataviewer/bigdataviewer-vistools):
 ![run with provided zebra.h5](src/main/resources/screen.png/?raw=true)
