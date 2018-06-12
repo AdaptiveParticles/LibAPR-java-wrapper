@@ -118,7 +118,7 @@
                     <classPath>${project.build.outputDirectory}</classPath>
                     <includePaths>
                         <includePath>${project.build.sourceDirectory}</includePath>
-                        <includePath>${basedir}/native/YacuDecu/src/</includePath>
+                        <includePath>${basedir}/native/LibAPR/src/</includePath>
                     </includePaths>
                     <linkPaths>
                         <linkPath>${basedir}/native/lib/</linkPath>
