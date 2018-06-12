@@ -64,11 +64,10 @@ public class BdvTest {
         JavaAPR apr = new JavaAPR();
         
         // ========================   Load APR ===========================
-        final String filename = "zebra.h5";
-//        final String filename = "sphere_apr.h5";
-        final URL url = ClassLoader.getSystemClassLoader().getResource( filename );
-        System.out.println("Loading [" + url.getPath() + "]");
-        apr.read(url.getPath());
+        String filename = "/tmp/LibAPR-java-wrapper/target/classes/zebra.h5";
+        System.out.println("Loading [" + filename + "]");
+        //apr.read(url.getPath());
+        apr.read(filename);
         System.out.println("Img Size (w/h/d): " + apr.width() + "/" + apr.height() + "/" + apr.depth());
 
         // ========================   Start BDV ===========================        
