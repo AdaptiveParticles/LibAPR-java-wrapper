@@ -53,7 +53,7 @@ public class BdvTest {
         final Img< UnsignedShortType > img = new DiskCachedCellImgFactory<>( new UnsignedShortType(), options ).create(dimensions,loader );
 
         BdvStackSource<UnsignedShortType> bdv = BdvFunctions.show( img, "APR TEST" );
-        bdv.setDisplayRange(0, 7000);
+//        bdv.setDisplayRange(0, 7000);
     }
     
     public static void main(String[] args) {
@@ -64,8 +64,8 @@ public class BdvTest {
         JavaAPR apr = new JavaAPR();
         
         // ========================   Load APR ===========================
-//        final String filename = "zebra.h5";
-        final String filename = "sphere_apr.h5";
+        final String filename = "zebra.h5";
+//        final String filename = "sphere_apr.h5";
         final URL url = ClassLoader.getSystemClassLoader().getResource( filename );
         System.out.println("Loading [" + url.getPath() + "]");
         apr.read(url.getPath());
