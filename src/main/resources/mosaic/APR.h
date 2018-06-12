@@ -15,7 +15,7 @@ public:
         APRReconstruction().interp_image_patch(apr, reconstructedImage, apr.particles_intensities, r);
     }
 
-    float *data() {return reconstructedImage.toType<float>().mesh.get();}
+    int16_t *data() {return (int16_t*)reconstructedImage.mesh.get();}
     int height() const {return reconstructedImage.x_num;}
     int width() const {return reconstructedImage.y_num;}
     int depth() const {return reconstructedImage.z_num;}
