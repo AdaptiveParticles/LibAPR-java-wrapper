@@ -4,12 +4,6 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>net.imglib2</groupId>
-        <artifactId>pom-imglib2</artifactId>
-        <version>10.0.2</version>
-    </parent>
-
     <name>Java wrapper for LibAPR</name>
     <groupId>mosaic</groupId>
     <artifactId>libapr-java-wrapper</artifactId>
@@ -23,10 +17,8 @@
     </repositories>
 
     <properties>
-        <imglib2.version>5.1.0</imglib2.version>
-        <imglib2-cache.version>1.0.0-beta-8</imglib2-cache.version>
-        <bigdataviewer-core.version>5.0.0</bigdataviewer-core.version>
-        <bigdataviewer-vistools.version>1.0.0-beta-11</bigdataviewer-vistools.version>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
     </properties>
 
     <dependencies>
@@ -39,6 +31,7 @@
         <dependency>
             <groupId>sc.fiji</groupId>
             <artifactId>bigdataviewer-vistools</artifactId>
+            <version>1.0.0-beta-11</version>
         </dependency>
     </dependencies>
 
