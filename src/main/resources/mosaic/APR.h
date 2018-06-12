@@ -3,20 +3,19 @@
 
 #include "data_structures/APR/APR.hpp"
 
-template <typename T>
-class AprToImg {
-    PixelData <T> reconstructedImage;
+class JavaAPR {
+    PixelData <uint16_t> reconstructedImage;
 
 public:
-    AprToImg () {}
+    JavaAPR () {}
     void read(const std::string &aAprFileName) {
-        APR <T> apr;
+        APR <uint16_t> apr;
         apr.read_apr(aAprFileName);
         ReconPatch r;
         APRReconstruction().interp_image_patch(apr, reconstructedImage, apr.particles_intensities, r);
     }
 
-    T *data() {return reconstructedImage.mesh.get();}
+    uint16_t *data() {return reconstructedImage.mesh.get();}
     int height() const {return reconstructedImage.x_num;}
     int width() const {return reconstructedImage.y_num;}
     int depth() const {return reconstructedImage.z_num;}

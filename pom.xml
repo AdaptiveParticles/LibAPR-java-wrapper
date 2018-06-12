@@ -119,11 +119,15 @@
                     <includePaths>
                         <includePath>${project.build.sourceDirectory}</includePath>
                         <includePath>${basedir}/native/LibAPR/src/</includePath>
+                        <includePath>${basedir}/native/LibAPR/build/</includePath>
                     </includePaths>
                     <linkPaths>
                         <linkPath>${basedir}/native/lib/</linkPath>
                     </linkPaths>
                     <copyLibs>true</copyLibs>
+                    <compilerOptions>
+    <compilerOption>-std=c++14</compilerOption>
+          </compilerOptions>
                 </configuration>
                 <executions>
                     <execution>
@@ -134,7 +138,7 @@
                         </goals>
                         <configuration>
                             <classOrPackageNames>
-                                <classOrPackageName>net.imagej.ops.experiments.filter.deconvolve.YacuDecuRichardsonLucyWrapper</classOrPackageName>
+                                <classOrPackageName>mosaic.JavaAPR</classOrPackageName>
                             </classOrPackageNames>
                         </configuration>
                     </execution>
