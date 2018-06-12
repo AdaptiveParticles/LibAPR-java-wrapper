@@ -122,12 +122,12 @@
                         <includePath>${basedir}/native/LibAPR/build/</includePath>
                     </includePaths>
                     <linkPaths>
-                        <linkPath>${basedir}/native/lib/</linkPath>
+                        <linkPath>${basedir}/native/LibAPR/build/</linkPath>
                     </linkPaths>
                     <copyLibs>true</copyLibs>
                     <compilerOptions>
-    <compilerOption>-std=c++14</compilerOption>
-          </compilerOptions>
+                        <compilerOption>-std=c++14</compilerOption>
+                    </compilerOptions>
                 </configuration>
                 <executions>
                     <execution>
