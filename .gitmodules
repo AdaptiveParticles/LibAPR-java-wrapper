@@ -1,0 +1,3 @@
+[submodule "native/LibAPR"]
+	path = native/LibAPR
+	url = git@github.com:cheesema/LibAPR.git
