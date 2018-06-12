@@ -18,8 +18,13 @@ and point directory with pom.xml
 
 
 ## How to run example?
-run
+Provide correct file path and run:
 
 ```
 BdvTest.java
+```
+
+two exemplary images are included in this repository in 'src/main/resources' so typical full path (if git clone was run in /tmp) would look like:
+```
+String filename = "/tmp/LibAPR-java-wrapper/src/main/resources/zebra.h5";
 ```
