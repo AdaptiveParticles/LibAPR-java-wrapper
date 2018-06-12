@@ -123,6 +123,7 @@
                     </includePaths>
                     <linkPaths>
                         <linkPath>${basedir}/native/LibAPR/build/</linkPath>
+  <!--                       <linkPath>/usr/local/Cellar/hdf5/1.10.2_1/lib/</linkPath> -->
                     </linkPaths>
                     <copyLibs>true</copyLibs>
                     <compilerOptions>

@@ -4,7 +4,7 @@ import org.bytedeco.javacpp.*;
 import org.bytedeco.javacpp.annotation.*;
 
 //@Platform(include = "APR.h")
-@Properties( value = { @Platform(include = "APR.h", link = { "apr"}) })
+@Properties( value = { @Platform(include = "APR.h", link = { "apr", "hdf5"}) })
 public class JavaAPR extends Pointer {
 
     static {
