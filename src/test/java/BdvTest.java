@@ -1,7 +1,6 @@
-package mosaic;
-
 import bdv.util.BdvFunctions;
 import bdv.util.BdvStackSource;
+import mosaic.JavaAPR;
 import net.imglib2.Cursor;
 import net.imglib2.cache.img.CellLoader;
 import net.imglib2.cache.img.DiskCachedCellImgFactory;
@@ -12,10 +11,13 @@ import net.imglib2.type.numeric.integer.UnsignedShortType;
 import org.bytedeco.javacpp.ShortPointer;
 import org.junit.Test;
 
+import java.io.FileNotFoundException;
+import java.net.URL;
+
 import static net.imglib2.cache.img.DiskCachedCellImgOptions.options;
 
 public class BdvTest {
-    final ShortPointer data;
+    ShortPointer data;
     int width, heigth, depth;
     
     public class FullImgLoader implements CellLoader< UnsignedShortType > {
@@ -32,7 +34,7 @@ public class BdvTest {
         }
     }
 
-    public BdvTest(ShortPointer imgData, int w, int h, int d) {
+    public void init(ShortPointer imgData, int w, int h, int d) {
         data = imgData;
         width = w;
         heigth = h;
@@ -54,7 +56,7 @@ public class BdvTest {
 //        bdv.setDisplayRange(0, 7000);
     }
     
-    @Test public void helloAPR() {
+    @Test public void BdvTest() throws FileNotFoundException {
         // "must be" print statement in any new software
         System.out.println("Hello from Java APR!");
         
@@ -63,14 +65,21 @@ public class BdvTest {
         
         // ========================   Load APR ===========================
 //        String filename = "/Users/gonciarz/Documents/MOSAIC/work/repo/LibAPR/build/output_apr.h5";
-        String filename = "/Users/gonciarz/Documents/MOSAIC/work/repo/LibAPR-java-wrapper/src/main/resources/sphere_apr.h5";
+        final URL resource = this.getClass().getResource("sphere_apr.h5");
+
+        if(resource == null) {
+            throw new FileNotFoundException("Could not find example file!");
+        }
+
+        String filename = resource.toString().substring(resource.toString().indexOf("file:/")+5);
         System.out.println("Loading [" + filename + "]");
         //apr.read(url.getPath());
         apr.read(filename);
         System.out.println("Img Size (w/h/d): " + apr.width() + "/" + apr.height() + "/" + apr.depth());
 
         // ========================   Start BDV ===========================        
-        BdvTest bt = new BdvTest(apr.data(), apr.width(), apr.height(), apr.depth());
+        BdvTest bt = new BdvTest();
+        bt.init(apr.data(), apr.width(), apr.height(), apr.depth());
         bt.show();
         
         // ========================   Destroy APR =========================
