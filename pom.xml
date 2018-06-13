@@ -36,6 +36,7 @@
     </dependencies>
 
     <build>
+        <testSourceDirectory>src/test/java</testSourceDirectory>
         <!-- Detect platform: ${os.detected.classifier} -->
         <extensions>
             <extension>
@@ -116,7 +117,7 @@
             <plugin>
                 <artifactId>maven-enforcer-plugin</artifactId>
                 <configuration>
-                    <skip>True</skip>
+                    <skip>true</skip>
                 </configuration>
                 <executions>
                     <execution>

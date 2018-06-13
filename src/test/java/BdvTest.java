@@ -1,11 +1,5 @@
 package mosaic;
 
-import static net.imglib2.cache.img.DiskCachedCellImgOptions.options;
-
-import java.net.URL;
-
-import org.bytedeco.javacpp.ShortPointer;
-
 import bdv.util.BdvFunctions;
 import bdv.util.BdvStackSource;
 import net.imglib2.Cursor;
@@ -15,6 +9,10 @@ import net.imglib2.cache.img.DiskCachedCellImgOptions;
 import net.imglib2.cache.img.SingleCellArrayImg;
 import net.imglib2.img.Img;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
+import org.bytedeco.javacpp.ShortPointer;
+import org.junit.Test;
+
+import static net.imglib2.cache.img.DiskCachedCellImgOptions.options;
 
 public class BdvTest {
     final ShortPointer data;
@@ -56,7 +54,7 @@ public class BdvTest {
 //        bdv.setDisplayRange(0, 7000);
     }
     
-    public static void main(String[] args) {
+    @Test public void helloAPR() {
         // "must be" print statement in any new software
         System.out.println("Hello from Java APR!");
         
