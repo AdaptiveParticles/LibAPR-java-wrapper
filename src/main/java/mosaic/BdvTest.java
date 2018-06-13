@@ -64,7 +64,7 @@ public class BdvTest {
         JavaAPR apr = new JavaAPR();
         
         // ========================   Load APR ===========================
-        String filename = "/tmp/LibAPR-java-wrapper/src/main/resources/zebra.h5";
+        String filename = "/Users/gonciarz/Documents/MOSAIC/work/repo/LibAPR-java-wrapper/src/main/resources/zebra.h5";
         System.out.println("Loading [" + filename + "]");
         //apr.read(url.getPath());
         apr.read(filename);
