@@ -4,7 +4,7 @@
 ## How to download and build?
 
 ```
-git clone --recurse git@github.com:krzysg/LibAPR-java-wrapper.git
+git clone --recurse https://github.com/krzysg/LibAPR-java-wrapper.git
 cd LibAPR-java-wrapper
 mvn package
 ```
