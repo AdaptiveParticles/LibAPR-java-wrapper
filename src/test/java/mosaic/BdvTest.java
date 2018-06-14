@@ -1,3 +1,4 @@
+package mosaic;
 import bdv.util.BdvFunctions;
 import bdv.util.BdvStackSource;
 import mosaic.JavaAPR;

@@ -16,7 +16,6 @@ import net.imglib2.cache.img.DiskCachedCellImgOptions;
 import net.imglib2.cache.img.DiskCachedCellImgOptions.CacheType;
 import net.imglib2.cache.img.SingleCellArrayImg;
 import net.imglib2.img.Img;
-import net.imglib2.img.cell.CellGrid;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
 
 public class BdvPatchTest {
@@ -82,8 +81,8 @@ public class BdvPatchTest {
         if (resource == null) {
             throw new FileNotFoundException("Could not find example file!");
         }
-        String filename = resource.toString().substring(resource.toString().indexOf("file:/")+5);
-//        String filename = "/Users/gonciarz/Documents/MOSAIC/work/repo/LibAPR/build/output_apr.h5";
+//        String filename = resource.toString().substring(resource.toString().indexOf("file:/")+5);
+        String filename = "/Users/gonciarz/Documents/MOSAIC/work/repo/LibAPR/build/output_apr.h5";
         
         // ========================   Create APR =========================
         apr = new JavaAPR();

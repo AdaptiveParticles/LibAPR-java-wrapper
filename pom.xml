@@ -33,7 +33,6 @@
             <artifactId>javacpp</artifactId>
             <version>1.4.1</version>
         </dependency>
-        
         <dependency>
             <groupId>sc.fiji</groupId>
             <artifactId>bigdataviewer-vistools</artifactId>
@@ -43,12 +42,12 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
-            <scope>compile</scope>
+	    <scope>compile</scope>
+        </dependency>
         <dependency>
             <groupId>net.imagej</groupId>
             <artifactId>imagej</artifactId>
         </dependency>
-
         <dependency>
             <groupId>net.imagej</groupId>
             <artifactId>imagej-legacy</artifactId>

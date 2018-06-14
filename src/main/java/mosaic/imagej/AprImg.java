@@ -23,7 +23,9 @@ public class AprImg extends ForwardingImg< UnsignedShortType > implements Wrappe
 	}
 
 	public static AprImg of( JavaAPR apr ) {
-		Img< UnsignedShortType > img = new BdvTest( apr.data(), apr.width(), apr.height(), apr.depth() ).getImg();
+	    BdvTest bdv = new BdvTest();
+	    bdv.init( apr.data(), apr.width(), apr.height(), apr.depth());
+		Img< UnsignedShortType > img = bdv.getImg();
 		return new AprImg( img, apr );
 	}
 
