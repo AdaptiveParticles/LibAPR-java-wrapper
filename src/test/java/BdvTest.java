@@ -60,21 +60,18 @@ public class BdvTest {
         // "must be" print statement in any new software
         System.out.println("Hello from Java APR!");
         
+        final URL resource = this.getClass().getResource("sphere_apr.h5");
+        if (resource == null) {
+            throw new FileNotFoundException("Could not find example file!");
+        }
+        String filename = resource.toString().substring(resource.toString().indexOf("file:/")+5);
+//        String filename = "/Users/gonciarz/Documents/MOSAIC/work/repo/LibAPR/build/output_apr.h5";
+        
         // ========================   Create APR =========================
         JavaAPR apr = new JavaAPR();
         
         // ========================   Load APR ===========================
-//        String filename = "/Users/gonciarz/Documents/MOSAIC/work/repo/LibAPR/build/output_apr.h5";
-        final URL resource = this.getClass().getResource("sphere_apr.h5");
-
-        if(resource == null) {
-            apr.close();
-            throw new FileNotFoundException("Could not find example file!");
-        }
-
-        String filename = resource.toString().substring(resource.toString().indexOf("file:/")+5);
         System.out.println("Loading [" + filename + "]");
-        //apr.read(url.getPath());
         apr.read(filename);
         System.out.println("Img Size (w/h/d): " + apr.width() + "/" + apr.height() + "/" + apr.depth());
 
