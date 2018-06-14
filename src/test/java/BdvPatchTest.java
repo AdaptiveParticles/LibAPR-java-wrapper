@@ -26,7 +26,7 @@ public class BdvPatchTest {
     
     public class PatchImgLoader implements CellLoader< UnsignedShortType > {
         @Override
-        public void load( final SingleCellArrayImg< UnsignedShortType, ? > cell ) throws Exception {
+        public synchronized void load( final SingleCellArrayImg< UnsignedShortType, ? > cell ) throws Exception {
             apr.reconstruct((int)cell.min(0), 
                             (int)cell.max(0), 
                             (int)cell.min(1), 
@@ -59,13 +59,12 @@ public class BdvPatchTest {
      * Creates big data viewer with one big cell containing whole image (good enough for proof of concept)
      */
     public void show() {
-        final int[] cellDimensions = new int[] { 64,64,64 };
+        final int[] cellDimensions = new int[] { 65,65,65 };
         final long[] dimensions   = new long[] { width, heigth, depth };
 
         final DiskCachedCellImgOptions options = options()
                 .cellDimensions(cellDimensions)
-                .cacheType(CacheType.BOUNDED)
-                .maxCacheSize(100)
+                .cacheType(CacheType.SOFTREF)
                 .numIoThreads(1);
 
         final CellLoader< UnsignedShortType > loader = new PatchImgLoader();
