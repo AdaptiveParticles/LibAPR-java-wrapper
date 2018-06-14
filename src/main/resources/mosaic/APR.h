@@ -34,6 +34,24 @@ public:
         APRReconstruction().interp_image_patch(apr, aprTree, reconstructedImage, apr.particles_intensities, partsTree, r);
     }
 
+    void reconstructToBuffer(int x, int y, int z, int width, int height, int depth, uint16_t* buffer) {
+//		printf("in reconstructToBuffer(%d, %d, %d, %d, %d, %d, %p)\n", x,y,z,width,height,depth,buffer);
+//		fflush(stdout);
+
+        ReconPatch r;
+        // Intentionally swapped x<->y
+        r.x_begin = y;
+        r.x_end = y + height;
+        r.y_begin = x;
+        r.y_end = x + width;
+        r.z_begin = z;
+        r.z_end = z + depth;
+
+        PixelData <uint16_t> img;
+        APRReconstruction().interp_image_patch(apr, aprTree, img, apr.particles_intensities, partsTree, r);
+        memcpy( buffer, img.mesh.get(), 2 * width * height * depth );
+    }
+
     JavaAPR* get16bitUnsignedAPRInternal(int width, int height, int depth, int bpp, uint16_t* buffer) {
         PixelData<uint16_t> p = PixelData<uint16_t>(width, height, depth);
         p.mesh.set(buffer, width*height*depth);
