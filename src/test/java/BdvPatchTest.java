@@ -33,8 +33,8 @@ public class BdvPatchTest {
                             (int)cell.max(1), 
                             (int)cell.min(2), 
                             (int)cell.max(2));
-            int w = (int)(cell.max(0) - cell.min(0) + 1);
-            int h = (int)(cell.max(1) - cell.min(1) + 1);
+            final int w = (int)(cell.dimension(0));
+            final int h = (int)(cell.dimension(1));
             data=apr.data();
             
             Cursor<UnsignedShortType> cursor = cell.cursor();
