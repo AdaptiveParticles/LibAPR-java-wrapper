@@ -41,16 +41,21 @@ public class BdvTest {
         depth = d;
     }
 
-    /**
-     * Creates big data viewer with one big cell containing whole image (good enough for proof of concept)
-     */
-    public void show() {
+    public Img< UnsignedShortType > getImg()
+    {
         final int[] cellDimensions = new int[] { width, heigth, depth};
         final long[] dimensions   = new long[] { width, heigth, depth };
 
         final DiskCachedCellImgOptions options = options().cellDimensions( cellDimensions );
         final CellLoader< UnsignedShortType > loader = new FullImgLoader();
-        final Img< UnsignedShortType > img = new DiskCachedCellImgFactory<>( new UnsignedShortType(), options ).create(dimensions,loader );
+        return new DiskCachedCellImgFactory<>( new UnsignedShortType(), options ).create(dimensions,loader );
+    }
+
+    /**
+     * Creates big data viewer with one big cell containing whole image (good enough for proof of concept)
+     */
+    public void show() {
+        final Img< UnsignedShortType > img = getImg();
 
         BdvStackSource<UnsignedShortType> bdv = BdvFunctions.show( img, "APR TEST" );
 //        bdv.setDisplayRange(0, 7000);
