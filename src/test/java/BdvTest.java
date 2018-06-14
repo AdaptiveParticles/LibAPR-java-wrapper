@@ -56,7 +56,7 @@ public class BdvTest {
 //        bdv.setDisplayRange(0, 7000);
     }
     
-    @Test public void BdvTest() throws FileNotFoundException {
+    @Test public void testShowImg() throws FileNotFoundException {
         // "must be" print statement in any new software
         System.out.println("Hello from Java APR!");
         
@@ -68,6 +68,7 @@ public class BdvTest {
         final URL resource = this.getClass().getResource("sphere_apr.h5");
 
         if(resource == null) {
+            apr.close();
             throw new FileNotFoundException("Could not find example file!");
         }
 
