@@ -11,6 +11,9 @@ import org.scijava.plugin.Plugin;
 
 import java.io.File;
 
+/**
+ * The import APR menu entry.
+ */
 @Plugin( type = Command.class, menuPath = "File > Import > APR..." )
 public class OpenAprCommand implements Command
 {
@@ -18,15 +21,14 @@ public class OpenAprCommand implements Command
 	File file;
 
 	@Parameter(type = ItemIO.OUTPUT)
-	Img<?> output;
+	AprImg output;
 
 	@Override
 	public void run()
 	{
 		JavaAPR apr = new JavaAPR();
 		apr.read( file.getPath() );
-		output = new BdvTest( apr.data(), apr.width(), apr.height(), apr.depth() ).getImg();
-		// TODO apr never gets closed
+		output = AprImg.of(apr);
 	}
 
 	public static void main(String... args)
