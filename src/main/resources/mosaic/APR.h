@@ -21,7 +21,7 @@ public:
     }
 
     // Default values for min/max will reconstruct whole image
-    void reconstruct(int x_min = 0, int x_max = -1, int y_min = 0, int y_max = -1, int z_min = 0, int z_max = -1) {
+    void reconstruct(int x_min = 0, int x_max = -2, int y_min = 0, int y_max = -2, int z_min = 0, int z_max = -2) {
         ReconPatch r;
         // Intentionally swapped x<->y
         r.x_begin = y_min;
