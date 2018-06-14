@@ -4,6 +4,12 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>org.scijava</groupId>
+        <artifactId>pom-scijava</artifactId>
+        <version>22.3.0</version>
+    </parent>
+
     <name>Java wrapper for LibAPR</name>
     <groupId>mosaic</groupId>
     <artifactId>libapr-java-wrapper</artifactId>
@@ -32,6 +38,16 @@
             <groupId>sc.fiji</groupId>
             <artifactId>bigdataviewer-vistools</artifactId>
             <version>1.0.0-beta-11</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.imagej</groupId>
+            <artifactId>imagej</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>net.imagej</groupId>
+            <artifactId>imagej-legacy</artifactId>
         </dependency>
     </dependencies>
 
