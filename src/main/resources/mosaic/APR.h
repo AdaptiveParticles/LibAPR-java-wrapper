@@ -34,7 +34,7 @@ public:
         APRReconstruction().interp_image_patch(apr, aprTree, reconstructedImage, apr.particles_intensities, partsTree, r);
     }
 
-    void reconstructToBuffer(int x, int y, int z, int width, int height, int depth, uint16_t* buffer) {
+    void reconstructToBuffer(int x, int y, int z, int width, int height, int depth, int level, uint16_t* buffer) {
 //		printf("in reconstructToBuffer(%d, %d, %d, %d, %d, %d, %p)\n", x,y,z,width,height,depth,buffer);
 //		fflush(stdout);
 
@@ -46,6 +46,7 @@ public:
         r.y_end = x + width;
         r.z_begin = z;
         r.z_end = z + depth;
+        r.level_delta = -level;
 
         PixelData <uint16_t> img;
         APRReconstruction().interp_image_patch(apr, aprTree, img, apr.particles_intensities, partsTree, r);

@@ -32,12 +32,16 @@ public class JavaAPR extends Pointer {
     public native ShortPointer data();
 
     protected native JavaAPR get16bitUnsignedAPRInternal(int width, int height, int depth, int bpp, @Cast("uint16_t*") ShortPointer buffer);
-    protected native void reconstructToBuffer(int x, int y, int z, int width, int height, int depth, @Cast("uint16_t*") Pointer buffer );
+    protected native void reconstructToBuffer(int x, int y, int z, int width, int height, int depth, int level, @Cast("uint16_t*") Pointer buffer );
 
     public void reconstructToBuffer( final int x, final int y, final int z, final int width, final int height, final int depth, final ShortBuffer buffer ) {
+    	reconstructToBuffer( x, y, z, width, height, depth, 0, buffer );
+    }
+
+    public void reconstructToBuffer( final int x, final int y, final int z, final int width, final int height, final int depth, final int level, final ShortBuffer buffer ) {
         if ( !buffer.isDirect() )
             throw new IllegalArgumentException();
-        reconstructToBuffer( x, y, z, width, height, depth, new ShortPointer( buffer ) );
+        reconstructToBuffer( x, y, z, width, height, depth, level, new ShortPointer( buffer ) );
     }
 
     public JavaAPR get16bitUnsignedAPR(int width, int height, int depth, int bpp, ShortBuffer buffer) {
