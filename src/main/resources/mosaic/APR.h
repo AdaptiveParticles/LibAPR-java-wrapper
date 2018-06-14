@@ -3,6 +3,7 @@
 
 #include "data_structures/APR/APR.hpp"
 #include "numerics/APRTreeNumerics.hpp"
+#include <cstdint>
 
 class JavaAPR {
     PixelData <uint16_t> reconstructedImage;
@@ -13,6 +14,10 @@ public:
     void read(const std::string &aAprFileName) {
         apr.read_apr(aAprFileName);
 
+        reconstruct();
+    }
+
+    void reconstruct() {
         APRTree<uint16_t> aprTree;
         aprTree.init(apr);
         ExtraParticleData<uint16_t> partsTree;
@@ -20,7 +25,14 @@ public:
 
         ReconPatch r;
         APRReconstruction().interp_image_patch(apr, aprTree, reconstructedImage, apr.particles_intensities, partsTree, r);
+    }
 
+    JavaAPR* get16bitUnsignedAPRInternal(int width, int height, int depth, int bpp, uint16_t* buffer) {
+        PixelData<uint16_t> p = PixelData<uint16_t>(width, height, depth);
+        p.mesh.set(buffer, width*height*depth);
+        apr.get_apr(p);
+
+        return this;
     }
 
     int16_t *data() {return (int16_t*)reconstructedImage.mesh.get();}
