@@ -150,6 +150,7 @@
             <plugin>
                 <groupId>org.bytedeco</groupId>
                 <artifactId>javacpp</artifactId>
+		<version>1.4.1</version>
                 <configuration>
                     <classPath>${project.build.outputDirectory}</classPath>
                     <includePaths>
