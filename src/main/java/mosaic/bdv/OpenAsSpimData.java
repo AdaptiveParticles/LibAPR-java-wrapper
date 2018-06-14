@@ -51,7 +51,7 @@ public class OpenAsSpimData
 				final int[] cellDimensions,
 				final int numLevels )
 		{
-			cache = new VolatileGlobalCellCache( numLevels, 1 );
+			cache = new VolatileGlobalCellCache( numLevels, 8 );
 
 			final double[][] resolutions = new double[ numLevels ][];
 			final int[][] subdivisions = new int[ numLevels ][];
