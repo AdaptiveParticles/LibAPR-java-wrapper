@@ -10,14 +10,13 @@ import net.imglib2.cache.img.SingleCellArrayImg;
 import net.imglib2.img.Img;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
 import org.bytedeco.javacpp.ShortPointer;
-import org.junit.Test;
 
 import java.io.FileNotFoundException;
 import java.net.URL;
 
 import static net.imglib2.cache.img.DiskCachedCellImgOptions.options;
 
-public class BdvTest {
+public class BdvFullReconstruction {
     ShortPointer data;
     int width, heigth, depth;
     
@@ -62,16 +61,11 @@ public class BdvTest {
 //        bdv.setDisplayRange(0, 7000);
     }
     
-    @Test public void testShowImg() throws FileNotFoundException {
+    public static void main(String[] args) {
         // "must be" print statement in any new software
         System.out.println("Hello from Java APR!");
         
-        final URL resource = this.getClass().getResource("sphere_apr.h5");
-        if (resource == null) {
-            throw new FileNotFoundException("Could not find example file!");
-        }
-        String filename = resource.toString().substring(resource.toString().indexOf("file:/")+5);
-//        String filename = "/Users/gonciarz/Documents/MOSAIC/work/repo/LibAPR/build/output_apr.h5";
+        String filename = "/Users/gonciarz/Documents/MOSAIC/work/repo/LibAPR-java-wrapper/src/test/resources/zebra.h5";
         
         // ========================   Create APR =========================
         JavaAPR apr = new JavaAPR();
@@ -83,7 +77,7 @@ public class BdvTest {
         System.out.println("Img Size (w/h/d): " + apr.width() + "/" + apr.height() + "/" + apr.depth());
 
         // ========================   Start BDV ===========================        
-        BdvTest bt = new BdvTest();
+        BdvFullReconstruction bt = new BdvFullReconstruction();
         bt.init(apr.data(), apr.width(), apr.height(), apr.depth());
         bt.show();
         
