@@ -1,7 +1,7 @@
 package mosaic.imagej;
 
 import net.imagej.ImageJ;
-import mosaic.BdvTest;
+import mosaic.BdvFullReconstruction;
 import mosaic.JavaAPR;
 import net.imglib2.img.Img;
 import org.scijava.ItemIO;

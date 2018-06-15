@@ -1,6 +1,6 @@
 package mosaic.imagej;
 
-import mosaic.BdvTest;
+import mosaic.BdvFullReconstruction;
 import mosaic.JavaAPR;
 import net.imglib2.img.Img;
 import net.imglib2.img.WrappedImg;
@@ -23,7 +23,7 @@ public class AprImg extends ForwardingImg< UnsignedShortType > implements Wrappe
 	}
 
 	public static AprImg of( JavaAPR apr ) {
-	    BdvTest bdv = new BdvTest();
+	    BdvFullReconstruction bdv = new BdvFullReconstruction();
 	    bdv.init( apr.data(), apr.width(), apr.height(), apr.depth());
 		Img< UnsignedShortType > img = bdv.getImg();
 		return new AprImg( img, apr );

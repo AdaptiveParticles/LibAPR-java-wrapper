@@ -1,4 +1,4 @@
-import mosaic.BdvTest;
+import mosaic.BdvFullReconstruction;
 import mosaic.JavaAPR;
 import org.junit.Test;
 
@@ -75,7 +75,7 @@ public class GetAPRTest {
     j.reconstruct();
 
     System.out.println("Showing APR in BDV...");
-    BdvTest bt = new BdvTest();
+    BdvFullReconstruction bt = new BdvFullReconstruction();
     bt.init(j.data(), j.width(), j.height(), j.depth());
     bt.show();
 
