@@ -151,6 +151,12 @@
                 <groupId>org.bytedeco</groupId>
                 <artifactId>javacpp</artifactId>
                 <configuration>
+          <propertyKeysAndValues>
+            <property>
+              <name>platform.compiler</name>
+              <value>/usr/local/opt/llvm/bin/clang++</value>
+            </property>
+</propertyKeysAndValues>
                     <classPath>${project.build.outputDirectory}</classPath>
                     <includePaths>
                         <includePath>${project.build.sourceDirectory}</includePath>
@@ -160,10 +166,13 @@
                     <linkPaths>
                         <linkPath>${basedir}/native/LibAPR/build/</linkPath>
                         <!-- <linkPath>/usr/local/Cellar/hdf5/1.10.2_1/lib/</linkPath> -->
+                       <linkPath>/usr/local/opt/llvm/lib/</linkPath>
                     </linkPaths>
                     <copyLibs>true</copyLibs>
                     <compilerOptions>
                         <compilerOption>-std=c++14</compilerOption>
+			<compilerOption>-DHAVE_OPENMP</compilerOption>
+			<compilerOption>-fopenmp=libomp</compilerOption>
                     </compilerOptions>
                 </configuration>
                 <executions>

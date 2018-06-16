@@ -216,8 +216,8 @@ public class OpenAsSpimData
 	public static void main( final String[] args )
 	{
 //		final String fn = "/Users/pietzsch/workspace/LibAPR/LibAPR-java-wrapper/src/test/resources/zebra.h5";
-		final String fn = "/Users/pietzsch/Desktop/data/APR/zebra7GB.h5";
-
+		//final String fn = "/Users/pietzsch/Desktop/data/APR/zebra7GB.h5";
+                String fn = "/Users/krzysg/LibAPR-java-wrapper/zebra20GB.h5";
 		final int[] cellDimensions = new int[] { 32, 32, 32 };
 		final int numLevels = 3;
 
