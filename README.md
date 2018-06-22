@@ -1,5 +1,6 @@
 # LibAPR-java-wrapper
 
+Wrapper for [LibAPR](https://github.com/cheesema/LibAPR) library.
 
 ## How to download and build?
 
