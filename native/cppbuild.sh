@@ -10,7 +10,7 @@ for PROJECT in ${PROJECTS[@]}; do
         echo "Installing \"$PROJECT\""
         mkdir -p "$PROJECT/build"
         pushd "$PROJECT/build"
-     CC="/usr/local/opt/llvm/bin/clang" CXX="/usr/local/opt/llvm/bin/clang++" LDFLAGS="-L/usr/local/opt/llvm/lib -Wl,-rpath,/usr/local/opt/llvm/lib" CPPFLAGS="-I/usr/local/opt/llvm/include"   cmake -DCMAKE_BUILD_TYPE=Release -DAPR_INSTALL=OFF -DAPR_BUILD_SHARED_LIB=OFF -DAPR_BUILD_STATIC_LIB=ON -DAPR_BUILD_EXAMPLES=OFF -DAPR_TESTS=OFF -DAPR_PREFER_EXTERNAL_GTEST=OFF -DAPR_PREFER_EXTERNAL_BLOSC=OFF -DAPR_BUILD_JAVA_WRAPPERS=OFF -DAPR_USE_CUDA=OFF -DAPR_BENCHMARK=OFF ..
+     CC="/usr/local/opt/llvm/bin/clang" CXX="/usr/local/opt/llvm/bin/clang++" LDFLAGS="-L/usr/local/opt/llvm/lib -Wl,-rpath,/usr/local/opt/llvm/lib" CPPFLAGS="-I/usr/local/opt/llvm/include"   cmake -DCMAKE_BUILD_TYPE=Release -DAPR_INSTALL=OFF -DAPR_BUILD_SHARED_LIB=OFF -DAPR_BUILD_STATIC_LIB=ON -DAPR_BUILD_EXAMPLES=OFF -DAPR_TESTS=OFF -DAPR_PREFER_EXTERNAL_GTEST=OFF -DAPR_PREFER_EXTERNAL_BLOSC=OFF -DAPR_BUILD_JAVA_WRAPPERS=OFF -DAPR_USE_CUDA=OFF -DAPR_BENCHMARK=OFF -DAPR_USE_LIBTIFF=OFF ..
         make -j 4
         popd
     fi
