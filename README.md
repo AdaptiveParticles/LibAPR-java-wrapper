@@ -18,17 +18,10 @@ File->Import->Maven->Existing Maven Projects
 and point directory with pom.xml
 
 
-## How to run example?
-Provide correct file path and run:
-
-```
-BdvTest.java
-```
-
-two exemplary images are included in this repository in 'src/main/resources' so typical full path (if git clone was run in /tmp) would look like:
-```
-String filename = "/tmp/LibAPR-java-wrapper/src/main/resources/zebra.h5";
-```
+## How to use it?
+Please refer to two projects using this java wrapper to visualize APR files:
+- [APR-VolumeRenderer](https://github.com/AdaptiveParticles/APR-VolumeRenderer)
+- [APR-BigDataViewer](https://github.com/AdaptiveParticles/APR-BigDataViewer)
 
 Example visualization with excellent [bigdataviewer-vistools](https://github.com/bigdataviewer/bigdataviewer-vistools):
 ![run with provided zebra.h5](src/test/resources/screen.png/?raw=true)
