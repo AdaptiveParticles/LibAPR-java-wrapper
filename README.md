@@ -5,7 +5,7 @@ Wrapper for [LibAPR](https://github.com/cheesema/LibAPR) library.
 ## How to download and build?
 
 ```
-git clone --recurse https://github.com/krzysg/LibAPR-java-wrapper.git
+git clone --recurse https://github.com/AdaptiveParticles/LibAPR-java-wrapper.git
 cd LibAPR-java-wrapper
 mvn package
 ```
