@@ -25,6 +25,7 @@ public class JavaAPR extends Pointer {
     // Declarations of all methods from JavaAPR class
     public native void read(String s);
     public native void reconstruct();
+    public native void showLevel();
     public native void reconstruct(int x_min, int x_max, int y_min, int y_max, int z_min, int z_max);
     public native int width();
     public native int height();
