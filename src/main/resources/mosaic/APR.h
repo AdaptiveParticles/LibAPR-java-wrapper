@@ -10,7 +10,7 @@ class JavaAPR {
     PixelData <uint16_t> reconstructedImage;
     APR <uint16_t> apr;
     APRTree<uint16_t> aprTree;
-    ExtraParticleData<uint16_t> partsTree;
+    ExtraParticleData<float> partsTree;
     
 public:
     JavaAPR () {}
@@ -18,7 +18,13 @@ public:
         apr.read_apr(aAprFileName);
         aprTree.init(apr);
         //APRTreeNumerics::fill_tree_from_particles(apr,aprTree,apr.particles_intensities,partsTree,[] (const uint16_t& a,const uint16_t& b) {return std::max(a,b);});
-	APRTreeNumerics::fill_tree_mean(apr,aprTree,apr.particles_intensities,partsTree);
+	    APRTreeNumerics::fill_tree_mean(apr,aprTree,apr.particles_intensities,partsTree);
+    }
+
+   void showLevel(){
+         APRNumerics::compute_part_level(apr,apr.particles_intensities);
+         APRTreeNumerics::fill_tree_mean(apr,aprTree,apr.particles_intensities,partsTree);
+
     }
 
     // Default values for min/max will reconstruct whole image
