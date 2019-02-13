@@ -3,6 +3,9 @@
 
 #include "data_structures/APR/APR.hpp"
 #include "numerics/APRTreeNumerics.hpp"
+
+#include "io/APRTimeIO.hpp"
+
 #include <cstdint>
 #include <iostream>
 
@@ -16,21 +19,41 @@ class JavaAPR {
     APRWriter aprWriter;
     std::string currentFileName;
 
+    APRTimeIO<uint16_t> aprTimeIO;
+    bool delta_mode;
+
+    ExtraParticleData<uint16_t> parts;
+
 public:
     JavaAPR () {
         currentTimePoint = 0;
+        delta_mode = true;
     }
     void read(const std::string &aAprFileName) {
-        apr.read_apr(aAprFileName);
-        aprTree.init(apr);
-        //APRTreeNumerics::fill_tree_from_particles(apr,aprTree,apr.particles_intensities,partsTree,[] (const uint16_t& a,const uint16_t& b) {return std::max(a,b);});
-	    APRTreeNumerics::fill_tree_mean(apr,aprTree,apr.particles_intensities,partsTree);
 
-	    totalTimePoints=aprWriter.get_num_time_steps(aAprFileName)+1;
+        currentFileName = aAprFileName;
+
+        
+
+        if(!delta_mode){
+            apr.read_apr(aAprFileName);
+            std::swap(parts,apr.particles_intensities);
+            aprTree.init(apr);
+            //APRTreeNumerics::fill_tree_from_particles(apr,aprTree,apr.particles_intensities,partsTree,[] (const uint16_t& a,const uint16_t& b) {return std::max(a,b);});
+	        APRTreeNumerics::fill_tree_mean(apr,aprTree,parts,partsTree);
+	        totalTimePoints=aprWriter.get_num_time_steps(aAprFileName)+1;
+        } else {
+            aprTimeIO.read_apr_init(aAprFileName);
+            totalTimePoints=aprTimeIO.number_time_steps;
+            aprTimeIO.read_time_point(0);
+            aprTimeIO.copy_pcd_to_parts(*aprTimeIO.current_APR,parts,aprTimeIO.current_particles);
+            aprTree.init(*aprTimeIO.current_APR);
+            APRTreeNumerics::fill_tree_mean(*aprTimeIO.current_APR,aprTree,parts,partsTree);
+            apr.copy_from_APR(*aprTimeIO.current_APR);
+
+        }
 
 	    std::cout << totalTimePoints << std::endl;
-
-	    currentFileName = aAprFileName;
     }
 
      void read(int newTimePoint) {
@@ -38,35 +61,50 @@ public:
         if(newTimePoint < totalTimePoints){
             std::cout << newTimePoint << std::endl;
 
-            APR<uint16_t> aprRead;
-            APRTree<uint16_t> aprTree2;
-            APRTree<uint16_t> aprTree3;
-            ExtraParticleData<float> partsTree2;
+            if(!delta_mode){
+                APR<uint16_t> aprRead;
+                APRTree<uint16_t> aprTree2;
+                APRTree<uint16_t> aprTree3;
+                ExtraParticleData<float> partsTree2;
 
-            //aprWriter.read_apr(apr,currentFileName,false,0,(unsigned int)newTimePoint);
+                //aprWriter.read_apr(apr,currentFileName,false,0,(unsigned int)newTimePoint);
 
-            aprWriter.read_apr(aprRead,currentFileName,false,0,(unsigned int)newTimePoint);
+                aprWriter.read_apr(aprRead,currentFileName,false,0,(unsigned int)newTimePoint);
 
-            apr.copy_from_APR(aprRead);
+                apr.copy_from_APR(aprRead);
 
-            aprTree2.init(apr);
+                aprTree2.init(apr);
 
-            //aprTree3.init(apr);
+                //aprTree3.init(apr);
 
-            APRTreeNumerics::fill_tree_mean(apr,aprTree2,apr.particles_intensities,partsTree2);
+                APRTreeNumerics::fill_tree_mean(apr,aprTree2,apr.particles_intensities,partsTree2);
 
+                aprTree.copyTree(aprTree2);
 
-            aprTree.copyTree(aprTree2);
+                partsTree.data = partsTree2.data;
 
-            partsTree.data = partsTree2.data;
+                std::swap(parts,apr.particles_intensities);
+
+            } else{
+                aprTimeIO.read_time_point(newTimePoint);
+                aprTimeIO.copy_pcd_to_parts(*aprTimeIO.current_APR,parts,aprTimeIO.current_particles);
+
+                //read tree
+                APRTree<uint16_t> aprTree2;
+                aprTree2.init(*aprTimeIO.current_APR);
+
+                //down-sample
+                APRTreeNumerics::fill_tree_mean(*aprTimeIO.current_APR,aprTree2,parts,partsTree);
+                aprTree.copyTree(aprTree2);
+            }
 
         }
     }
 
 
    void showLevel(){
-         APRNumerics::compute_part_level(apr,apr.particles_intensities);
-         APRTreeNumerics::fill_tree_mean(apr,aprTree,apr.particles_intensities,partsTree);
+         APRNumerics::compute_part_level(apr,parts);
+         APRTreeNumerics::fill_tree_mean(apr,aprTree,parts,partsTree);
 
     }
 
@@ -81,7 +119,7 @@ public:
         r.z_begin = z_min;
         r.z_end = z_max + 1;
 
-        APRReconstruction().interp_image_patch(apr, aprTree, reconstructedImage, apr.particles_intensities, partsTree, r);
+        APRReconstruction().interp_image_patch(apr, aprTree, reconstructedImage, parts, partsTree, r);
     }
 
     void reconstructToBuffer(int x, int y, int z, int width, int height, int depth, int level, uint16_t* buffer) {
@@ -99,7 +137,12 @@ public:
         r.level_delta = -level;
 
         PixelData <uint16_t> img;
-        APRReconstruction().interp_image_patch(apr, aprTree, img, apr.particles_intensities, partsTree, r);
+        if(!delta_mode){
+            APRReconstruction().interp_image_patch(apr, aprTree, img, parts, partsTree, r);
+        } else {
+            APRReconstruction().interp_image_patch(*aprTimeIO.current_APR, aprTree, img, parts, partsTree, r);
+        }
+
         memcpy( buffer, img.mesh.get(), 2 * width * height * depth );
     }
 
