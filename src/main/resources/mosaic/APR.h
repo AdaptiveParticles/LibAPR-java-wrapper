@@ -11,15 +11,39 @@ class JavaAPR {
     APR <uint16_t> apr;
     APRTree<uint16_t> aprTree;
     ExtraParticleData<float> partsTree;
-    
+    int currentTimePoint;
+    int totalTimePoints;
+    APRWriter aprWriter;
+    std::string currentFileName;
+
 public:
-    JavaAPR () {}
+    JavaAPR () {
+        currentTimePoint = 0;
+    }
     void read(const std::string &aAprFileName) {
         apr.read_apr(aAprFileName);
         aprTree.init(apr);
         //APRTreeNumerics::fill_tree_from_particles(apr,aprTree,apr.particles_intensities,partsTree,[] (const uint16_t& a,const uint16_t& b) {return std::max(a,b);});
 	    APRTreeNumerics::fill_tree_mean(apr,aprTree,apr.particles_intensities,partsTree);
+
+	    totalTimePoints=aprWriter.get_number_time_steps(aAprFileName);
+
+	    std::cout << totalTimePoints << std::endl;
+
+	    currentFileName = aAprFileName;
     }
+
+     void read(int newTimePoint) {
+
+        if(newTimePoint < totalTimePoints){
+            aprWriter.read_apr(apr,aAprFileName,false,0,(unsigned int)newTimePoint);
+
+            aprTree.init(apr);
+
+            APRTreeNumerics::fill_tree_mean(apr,aprTree,apr.particles_intensities,partsTree);
+        }
+    }
+
 
    void showLevel(){
          APRNumerics::compute_part_level(apr,apr.particles_intensities);
@@ -37,7 +61,7 @@ public:
         r.y_end = x_max + 1;
         r.z_begin = z_min;
         r.z_end = z_max + 1;
-            
+
         APRReconstruction().interp_image_patch(apr, aprTree, reconstructedImage, apr.particles_intensities, partsTree, r);
     }
 
@@ -73,6 +97,10 @@ public:
     int height() const {return apr.orginal_dimensions(1);}
     int width() const {return apr.orginal_dimensions(0);}
     int depth() const {return apr.orginal_dimensions(2);}
+
+    int timePoint() const {return currentTimePoint;}
+    int numberTimePoints() const {return totalTimePoints;}
+
 };
 
 #endif //__APR_H__
