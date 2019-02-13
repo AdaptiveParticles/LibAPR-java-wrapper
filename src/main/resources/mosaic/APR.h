@@ -26,7 +26,7 @@ public:
         //APRTreeNumerics::fill_tree_from_particles(apr,aprTree,apr.particles_intensities,partsTree,[] (const uint16_t& a,const uint16_t& b) {return std::max(a,b);});
 	    APRTreeNumerics::fill_tree_mean(apr,aprTree,apr.particles_intensities,partsTree);
 
-	    totalTimePoints=aprWriter.get_number_time_steps(aAprFileName);
+	    totalTimePoints=aprWriter.get_num_time_steps(aAprFileName)+1;
 
 	    std::cout << totalTimePoints << std::endl;
 
@@ -34,13 +34,32 @@ public:
     }
 
      void read(int newTimePoint) {
-
+        currentTimePoint = newTimePoint;
         if(newTimePoint < totalTimePoints){
-            aprWriter.read_apr(apr,aAprFileName,false,0,(unsigned int)newTimePoint);
+            std::cout << newTimePoint << std::endl;
 
-            aprTree.init(apr);
+            APR<uint16_t> aprRead;
+            APRTree<uint16_t> aprTree2;
+            APRTree<uint16_t> aprTree3;
+            ExtraParticleData<float> partsTree2;
 
-            APRTreeNumerics::fill_tree_mean(apr,aprTree,apr.particles_intensities,partsTree);
+            //aprWriter.read_apr(apr,currentFileName,false,0,(unsigned int)newTimePoint);
+
+            aprWriter.read_apr(aprRead,currentFileName,false,0,(unsigned int)newTimePoint);
+
+            apr.copy_from_APR(aprRead);
+
+            aprTree2.init(apr);
+
+            //aprTree3.init(apr);
+
+            APRTreeNumerics::fill_tree_mean(apr,aprTree2,apr.particles_intensities,partsTree2);
+
+
+            aprTree.copyTree(aprTree2);
+
+            partsTree.data = partsTree2.data;
+
         }
     }
 
