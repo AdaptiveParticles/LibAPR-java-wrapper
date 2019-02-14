@@ -21,6 +21,7 @@ class JavaAPR {
 
     APRTimeIO<uint16_t> aprTimeIO;
     bool delta_mode;
+    bool display_level;
 
     ExtraParticleData<uint16_t> parts;
 
@@ -28,6 +29,7 @@ public:
     JavaAPR () {
         currentTimePoint = 0;
         delta_mode = false;
+        display_level = false;
     }
     void read(const std::string &aAprFileName) {
 
@@ -38,18 +40,29 @@ public:
         if(!delta_mode){
             std::cout << "Reading standard file" << std::endl;
             apr.read_apr(aAprFileName);
-            std::swap(parts,apr.particles_intensities);
             aprTree.init(apr);
-            //APRTreeNumerics::fill_tree_from_particles(apr,aprTree,apr.particles_intensities,partsTree,[] (const uint16_t& a,const uint16_t& b) {return std::max(a,b);});
-	        APRTreeNumerics::fill_tree_mean(apr,aprTree,parts,partsTree);
+
+            if(display_level){
+                APRNumerics::compute_part_level(apr,parts);
+            } else {
+                std::swap(parts,apr.particles_intensities);
+            }
+
+            APRTreeNumerics::fill_tree_mean(apr,aprTree,parts,partsTree);
 	        totalTimePoints=aprWriter.get_num_time_steps(aAprFileName)+1;
         } else {
             std::cout << "Reading APR+T file" << std::endl;
             aprTimeIO.read_apr_init(aAprFileName);
             totalTimePoints=aprTimeIO.number_time_steps;
             aprTimeIO.read_time_point(0);
-            aprTimeIO.copy_pcd_to_parts(*aprTimeIO.current_APR,parts,aprTimeIO.current_particles);
             aprTree.init(*aprTimeIO.current_APR);
+
+            if(display_level){
+                APRNumerics::compute_part_level(*aprTimeIO.current_APR,parts);
+            } else {
+                aprTimeIO.copy_pcd_to_parts(*aprTimeIO.current_APR,parts,aprTimeIO.current_particles);
+            }
+
             APRTreeNumerics::fill_tree_mean(*aprTimeIO.current_APR,aprTree,parts,partsTree);
             apr.copy_from_APR(*aprTimeIO.current_APR);
 
@@ -79,17 +92,28 @@ public:
 
                 //aprTree3.init(apr);
 
-                APRTreeNumerics::fill_tree_mean(apr,aprTree2,apr.particles_intensities,partsTree2);
+                 if(display_level){
+                       APRNumerics::compute_part_level(apr,parts);
+                  } else {
+                       std::swap(parts,apr.particles_intensities);
+                  }
+
+                APRTreeNumerics::fill_tree_mean(apr,aprTree2,parts,partsTree2);
 
                 aprTree.copyTree(aprTree2);
 
                 partsTree.data = partsTree2.data;
 
-                std::swap(parts,apr.particles_intensities);
+
 
             } else{
                 aprTimeIO.read_time_point(newTimePoint);
-                aprTimeIO.copy_pcd_to_parts(*aprTimeIO.current_APR,parts,aprTimeIO.current_particles);
+
+                if(display_level){
+                     APRNumerics::compute_part_level(*aprTimeIO.current_APR,parts);
+                } else {
+                     aprTimeIO.copy_pcd_to_parts(*aprTimeIO.current_APR,parts,aprTimeIO.current_particles);
+                }
 
                 //read tree
                 APRTree<uint16_t> aprTree2;
@@ -105,9 +129,9 @@ public:
 
 
    void showLevel(){
-         APRNumerics::compute_part_level(apr,parts);
-         APRTreeNumerics::fill_tree_mean(apr,aprTree,parts,partsTree);
-
+         //instead of the particle instensities show the adaptation level.
+         std::cout << "Displaying level instead of Intensities" << std::endl;
+         display_level = true;
     }
 
     // Default values for min/max will reconstruct whole image
