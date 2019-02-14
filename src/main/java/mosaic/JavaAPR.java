@@ -27,6 +27,7 @@ public class JavaAPR extends Pointer {
     public native void read(int timeStep);
     public native void reconstruct();
     public native void showLevel();
+    public native void setMaxDownsample();
     public native void reconstruct(int x_min, int x_max, int y_min, int y_max, int z_min, int z_max);
     public native int width();
     public native int height();

@@ -22,6 +22,7 @@ class JavaAPR {
     APRTimeIO<uint16_t> aprTimeIO;
     bool delta_mode;
     bool display_level;
+    bool max_down_sample;
 
     ExtraParticleData<uint16_t> parts;
 
@@ -30,6 +31,7 @@ public:
         currentTimePoint = 0;
         delta_mode = false;
         display_level = false;
+        max_down_sample = false;
     }
     void read(const std::string &aAprFileName) {
 
@@ -48,7 +50,13 @@ public:
                 std::swap(parts,apr.particles_intensities);
             }
 
-            APRTreeNumerics::fill_tree_mean(apr,aprTree,parts,partsTree);
+            if(max_down_sample){
+                APRTreeNumerics::fill_tree_max(apr,aprTree,parts,partsTree); //use max
+            } else {
+                APRTreeNumerics::fill_tree_mean(apr,aprTree,parts,partsTree); //use mean
+            }
+
+
 	        totalTimePoints=aprWriter.get_num_time_steps(aAprFileName)+1;
         } else {
             std::cout << "Reading APR+T file" << std::endl;
@@ -63,7 +71,12 @@ public:
                 aprTimeIO.copy_pcd_to_parts(*aprTimeIO.current_APR,parts,aprTimeIO.current_particles);
             }
 
-            APRTreeNumerics::fill_tree_mean(*aprTimeIO.current_APR,aprTree,parts,partsTree);
+            if(max_down_sample){
+                APRTreeNumerics::fill_tree_max(*aprTimeIO.current_APR,aprTree,parts,partsTree);
+            } else {
+                APRTreeNumerics::fill_tree_mean(*aprTimeIO.current_APR,aprTree,parts,partsTree);
+            }
+
             apr.copy_from_APR(*aprTimeIO.current_APR);
 
         }
@@ -98,7 +111,12 @@ public:
                        std::swap(parts,apr.particles_intensities);
                   }
 
-                APRTreeNumerics::fill_tree_mean(apr,aprTree2,parts,partsTree2);
+                 if(max_down_sample){
+
+                    APRTreeNumerics::fill_tree_max(apr,aprTree2,parts,partsTree2);
+                 } else {
+                    APRTreeNumerics::fill_tree_mean(apr,aprTree2,parts,partsTree2);
+                 }
 
                 aprTree.copyTree(aprTree2);
 
@@ -120,7 +138,11 @@ public:
                 aprTree2.init(*aprTimeIO.current_APR);
 
                 //down-sample
-                APRTreeNumerics::fill_tree_mean(*aprTimeIO.current_APR,aprTree2,parts,partsTree);
+                if(max_down_sample){
+                    APRTreeNumerics::fill_tree_max(*aprTimeIO.current_APR,aprTree2,parts,partsTree);
+                } else {
+                    APRTreeNumerics::fill_tree_mean(*aprTimeIO.current_APR,aprTree2,parts,partsTree);
+                }
                 aprTree.copyTree(aprTree2);
             }
 
@@ -132,6 +154,12 @@ public:
          //instead of the particle instensities show the adaptation level.
          std::cout << "Displaying level instead of Intensities" << std::endl;
          display_level = true;
+    }
+
+    void setMaxDownsample(){
+             //instead of the particle instensities show the adaptation level.
+             std::cout << "Using Maximum down-sample instead of mean" << std::endl;
+             max_down_sample = true;
     }
 
     // Default values for min/max will reconstruct whole image
