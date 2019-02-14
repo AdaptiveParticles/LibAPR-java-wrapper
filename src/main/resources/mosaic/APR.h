@@ -27,15 +27,16 @@ class JavaAPR {
 public:
     JavaAPR () {
         currentTimePoint = 0;
-        delta_mode = true;
+        delta_mode = false;
     }
     void read(const std::string &aAprFileName) {
 
         currentFileName = aAprFileName;
 
-        
+        delta_mode = aprWriter.time_adaptation_check(aAprFileName);
 
         if(!delta_mode){
+            std::cout << "Reading standard file" << std::endl;
             apr.read_apr(aAprFileName);
             std::swap(parts,apr.particles_intensities);
             aprTree.init(apr);
@@ -43,6 +44,7 @@ public:
 	        APRTreeNumerics::fill_tree_mean(apr,aprTree,parts,partsTree);
 	        totalTimePoints=aprWriter.get_num_time_steps(aAprFileName)+1;
         } else {
+            std::cout << "Reading APR+T file" << std::endl;
             aprTimeIO.read_apr_init(aAprFileName);
             totalTimePoints=aprTimeIO.number_time_steps;
             aprTimeIO.read_time_point(0);
@@ -152,6 +154,10 @@ public:
         apr.get_apr(p);
 
         return this;
+    }
+
+    void write(std::string directory,std::string name){
+        apr.write_apr(directory,name);
     }
 
     int16_t *data() {return (int16_t*)reconstructedImage.mesh.get();}

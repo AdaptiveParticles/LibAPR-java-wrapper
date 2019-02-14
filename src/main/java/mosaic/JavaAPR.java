@@ -32,6 +32,8 @@ public class JavaAPR extends Pointer {
     public native int height();
     public native int depth();
 
+    public native void write(String directory,String name);
+
     public native int timePoint();
     public native int numberTimePoints();
 
