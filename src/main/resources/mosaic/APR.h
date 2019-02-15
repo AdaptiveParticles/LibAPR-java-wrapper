@@ -3,6 +3,7 @@
 
 #include "data_structures/APR/APR.hpp"
 #include "numerics/APRTreeNumerics.hpp"
+#include "numerics/APRNumerics.hpp"
 
 #include "io/APRTimeIO.hpp"
 
@@ -149,6 +150,55 @@ public:
         }
     }
 
+    void getAPRBufferInternal(float* buffer){
+
+        auto num_parts = apr.total_number_particles();
+
+            auto apr_iterator = apr.iterator();
+
+            auto buffer_size = 8*num_parts;
+
+            std::vector<float> apr_buffer;
+            apr_buffer.resize(buffer_size);
+
+            buffer = apr_buffer.data();
+
+            ExtraParticleData<std::vector<float>> gradient;
+
+            APRNumerics::compute_gradient_vector(apr,gradient);
+
+
+            for (unsigned int level = apr_iterator.level_min(); level <= apr_iterator.level_max(); ++level) {
+                int z = 0;
+                int x = 0;
+
+        #ifdef HAVE_OPENMP
+        #pragma omp parallel for schedule(dynamic) private(z, x) firstprivate(apr_iterator)
+        #endif
+                for (z = 0; z < apr_iterator.spatial_index_z_max(level); z++) {
+                    for (x = 0; x < apr_iterator.spatial_index_x_max(level); ++x) {
+                        for (apr_iterator.set_new_lzx(level, z, x); apr_iterator.global_index() < apr_iterator.end_index;
+                             apr_iterator.set_iterator_to_particle_next_particle()) {
+
+                            apr_buffer[apr_iterator] = apr_iterator.y();
+                            apr_buffer[apr_iterator + num_parts] = apr_iterator.x();
+                            apr_buffer[apr_iterator + num_parts*2] = apr_iterator.z();
+                            apr_buffer[apr_iterator + num_parts*3] = apr_iterator.level();
+
+                            apr_buffer[apr_iterator + num_parts*4] = apr.particles_intensities[apr_iterator];
+
+                            apr_buffer[apr_iterator + num_parts*5] = gradient[apr_iterator][0];
+                            apr_buffer[apr_iterator + num_parts*6] = gradient[apr_iterator][1];
+                            apr_buffer[apr_iterator + num_parts*7] = gradient[apr_iterator][2];
+
+                        }
+                    }
+                }
+            }
+
+
+    }
+
 
    void showLevel(){
          //instead of the particle instensities show the adaptation level.
@@ -217,6 +267,7 @@ public:
     int height() const {return apr.orginal_dimensions(1);}
     int width() const {return apr.orginal_dimensions(0);}
     int depth() const {return apr.orginal_dimensions(2);}
+    int numberParticles() const {return apr.total_number_particles();}
 
     int timePoint() const {return currentTimePoint;}
     int numberTimePoints() const {return totalTimePoints;}
