@@ -30,6 +30,7 @@ public class JavaAPR extends Pointer {
     public native int height();
     public native int depth();
     public native ShortPointer data();
+    public native void saveAPR(String aDirectory, String aFileName);
 
     protected native JavaAPR get16bitUnsignedAPRInternal(int width, int height, int depth, int bpp, @Cast("uint16_t*") ShortPointer buffer);
     protected native void reconstructToBuffer(int x, int y, int z, int width, int height, int depth, int level, @Cast("uint16_t*") Pointer buffer );
@@ -56,4 +57,5 @@ public class JavaAPR extends Pointer {
         }
         return get16bitUnsignedAPRInternal(width, height, depth, bpp, p);
     }
+
 }

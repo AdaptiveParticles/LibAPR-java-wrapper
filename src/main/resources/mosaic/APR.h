@@ -17,8 +17,7 @@ public:
     void read(const std::string &aAprFileName) {
         apr.read_apr(aAprFileName);
         aprTree.init(apr);
-        //APRTreeNumerics::fill_tree_from_particles(apr,aprTree,apr.particles_intensities,partsTree,[] (const uint16_t& a,const uint16_t& b) {return std::max(a,b);});
-	APRTreeNumerics::fill_tree_mean(apr,aprTree,apr.particles_intensities,partsTree);
+	    APRTreeNumerics::fill_tree_mean(apr,aprTree,apr.particles_intensities,partsTree);
     }
 
     // Default values for min/max will reconstruct whole image
@@ -57,6 +56,18 @@ public:
     JavaAPR* get16bitUnsignedAPRInternal(int width, int height, int depth, int bpp, uint16_t* buffer) {
         PixelData<uint16_t> p = PixelData<uint16_t>(width, height, depth);
         p.mesh.set(buffer, width*height*depth);
+        apr.parameters.Ip_th = -1;
+        apr.parameters.SNR_min = -1;
+        apr.parameters.lambda = -1;
+        apr.parameters.min_signal = -1;
+        apr.parameters.rel_error = 0.1;
+        apr.parameters.sigma_th = 0;
+        apr.parameters.sigma_th_max = 0;
+
+        apr.parameters.normalized_input = false;
+        apr.parameters.neighborhood_optimization = true;
+        apr.parameters.auto_parameters = true;
+
         apr.get_apr(p);
 
         return this;
@@ -67,6 +78,12 @@ public:
     int height() const {return apr.orginal_dimensions(1);}
     int width() const {return apr.orginal_dimensions(0);}
     int depth() const {return apr.orginal_dimensions(2);}
+
+    void saveAPR(const std::string &aDirectory, const std::string &aFileName) {
+        std::cout << "Saving file: [" << aDirectory << "][" << aFileName << "]" << std::endl;
+        float totalFileSize = apr.write_apr(aDirectory, aFileName).total_file_size;
+        std::cout << "Saved " << totalFileSize << " MB." << std::endl;
+    }
 };
 
 #endif //__APR_H__
