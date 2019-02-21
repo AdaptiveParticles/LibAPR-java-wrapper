@@ -27,13 +27,36 @@ class JavaAPR {
 
     ExtraParticleData<uint16_t> parts;
 
+    ExtraParticleData<uint8_t> treeMaxLevel;
+
+    APRParameters PipelinePars;
+
+    int levelMax_;
+    int levelMin_;
+
 public:
     JavaAPR () {
         currentTimePoint = 0;
         delta_mode = false;
         display_level = false;
         max_down_sample = false;
+        levelMax_ = 0;
+        levelMin_ = 0;
     }
+
+    int16_t *data() {return (int16_t*)reconstructedImage.mesh.get();}
+
+    int height() const {return apr.orginal_dimensions(1);}
+    int width() const {return apr.orginal_dimensions(0);}
+    int depth() const {return apr.orginal_dimensions(2);}
+    int numberParticles() const {return apr.total_number_particles();}
+
+    int timePoint() const {return currentTimePoint;}
+    int numberTimePoints() const {return totalTimePoints;}
+
+    int levelMax()  {return levelMax_;}
+    int levelMin()  {return levelMin_;}
+
     void read(const std::string &aAprFileName) {
 
         currentFileName = aAprFileName;
@@ -57,6 +80,10 @@ public:
                 APRTreeNumerics::fill_tree_mean(apr,aprTree,parts,partsTree); //use mean
             }
 
+            APRTreeNumerics::fill_tree_max_level(apr,aprTree,treeMaxLevel);
+
+            levelMax_ = apr.level_max();
+            levelMin_ = apr.level_min();
 
 	        totalTimePoints=aprWriter.get_num_time_steps(aAprFileName)+1;
         } else {
@@ -77,6 +104,11 @@ public:
             } else {
                 APRTreeNumerics::fill_tree_mean(*aprTimeIO.current_APR,aprTree,parts,partsTree);
             }
+
+            APRTreeNumerics::fill_tree_max_level(*aprTimeIO.current_APR,aprTree,treeMaxLevel);
+
+            levelMax_= aprTimeIO.current_APR->level_max();
+            levelMin_ = aprTimeIO.current_APR->level_min();
 
             apr.copy_from_APR(*aprTimeIO.current_APR);
 
@@ -114,15 +146,12 @@ public:
 
                  if(max_down_sample){
 
-                    APRTreeNumerics::fill_tree_max(apr,aprTree2,parts,partsTree2);
+                    APRTreeNumerics::fill_tree_max(apr,aprTree2,parts,partsTree);
                  } else {
-                    APRTreeNumerics::fill_tree_mean(apr,aprTree2,parts,partsTree2);
+                    APRTreeNumerics::fill_tree_mean(apr,aprTree2,parts,partsTree);
                  }
 
                 aprTree.copyTree(aprTree2);
-
-                partsTree.data = partsTree2.data;
-
 
 
             } else{
@@ -144,7 +173,14 @@ public:
                 } else {
                     APRTreeNumerics::fill_tree_mean(*aprTimeIO.current_APR,aprTree2,parts,partsTree);
                 }
+
+                APRTreeNumerics::fill_tree_max_level(*aprTimeIO.current_APR,aprTree2,treeMaxLevel);
+
                 aprTree.copyTree(aprTree2);
+
+                std::cout << "Total added (APR+t): " << aprTimeIO.get_num_updated() << std::endl;
+                std::cout << "Total added (APR): " << aprTimeIO.current_APR->total_number_particles() << std::endl;
+                std::cout << "Total added (Pixels): " << aprTimeIO.current_APR->orginal_dimensions(0)*aprTimeIO.current_APR->orginal_dimensions(1)*aprTimeIO.current_APR->orginal_dimensions(2) << std::endl;
             }
 
         }
@@ -166,7 +202,6 @@ public:
             ExtraParticleData<std::vector<float>> gradient;
 
             APRNumerics::compute_gradient_vector(apr,gradient);
-
 
             for (unsigned int level = apr_iterator.level_min(); level <= apr_iterator.level_max(); ++level) {
                 int z = 0;
@@ -207,10 +242,15 @@ public:
     }
 
     void setMaxDownsample(){
-             //instead of the particle instensities show the adaptation level.
-             std::cout << "Using Maximum down-sample instead of mean" << std::endl;
-             max_down_sample = true;
+         //instead of the particle instensities show the adaptation level.
+         std::cout << "Using Maximum down-sample instead of mean" << std::endl;
+         max_down_sample = true;
     }
+
+ /*
+  *
+  *    Reconstruct Patch
+  */
 
     // Default values for min/max will reconstruct whole image
     void reconstruct(int x_min = 0, int x_max = -2, int y_min = 0, int y_max = -2, int z_min = 0, int z_max = -2) {
@@ -250,6 +290,57 @@ public:
         memcpy( buffer, img.mesh.get(), 2 * width * height * depth );
     }
 
+    int checkReconstructionRequired(int x, int y, int z, int width, int height, int depth, int level){
+        ReconPatch r;
+        // Intentionally swapped x<->y
+        r.x_begin = y;
+        r.x_end = y + height;
+        r.y_begin = x;
+        r.y_end = x + width;
+        r.z_begin = z;
+        r.z_end = z + depth;
+        r.level_delta = -level;
+
+        auto render_level = levelMax_ - level;
+
+        auto max_patch_size = std::max(width,std::max(height,depth));
+        int patch_level_delta = std::ceil(std::log2(max_patch_size));
+
+        int global_level_check = (render_level - patch_level_delta);
+
+        if(global_level_check <= levelMin_){
+            return 1;
+        } else {
+            const float step_size = pow(2,patch_level_delta);
+            int x_begin_l = (int) floor(y/step_size);
+            int z_begin_l= (int)floor(z/step_size);
+            int y_begin_l =  (int)floor(x/step_size);
+
+            auto aprTreeIterator = aprTree.tree_iterator();
+
+            aprTreeIterator.set_new_lzxy(global_level_check, z_begin_l, x_begin_l,y_begin_l);
+
+            if(aprTreeIterator < aprTreeIterator.end_index){
+                auto max_level = treeMaxLevel[aprTreeIterator];
+                if(max_level < render_level){
+                    return 0;
+                } else {
+                    return 1;
+                }
+            } else{
+                return 0; //tree doesn't exist at this level no need to render
+            }
+        }
+
+    }
+
+
+
+    /*
+    *
+    *    Get APR from img
+    */
+
     JavaAPR* get16bitUnsignedAPRInternal(int width, int height, int depth, int bpp, uint16_t* buffer) {
         PixelData<uint16_t> p = PixelData<uint16_t>(width, height, depth);
         p.mesh.set(buffer, width*height*depth);
@@ -258,19 +349,42 @@ public:
         return this;
     }
 
+
+    void set_I_th(float I_th)// Threshold, adaptation ignores areas below this fixed intensity threshold
+    {
+        PipelinePars.Ip_th = I_th;
+    }
+    void set_lambda(float lambda) // Smoothing parameter for calculation of the gradient (default: 3, range 0.5-5)
+    {
+        PipelinePars.lambda = lambda;
+    }
+    void set_local_scale_min(float local_scale_min)  // Minimum local contrast (object brightness - background)
+    {
+        PipelinePars.sigma_th = local_scale_min;
+    }
+
+    void set_local_scale_ignore_th(float local_scale_ignore_th) // Threshold of the local scale below which the adaptation ignores
+    {
+        PipelinePars.sigma_th_max = local_scale_ignore_th;
+    }
+    void set_relative_error_E(float relative_error_E) // Relative error E, default 0.1
+    {
+        PipelinePars.rel_error = relative_error_E;
+    }
+    void use_auto_parameters(bool turn_on) //calculate automatic parameters from the image
+    {
+        PipelinePars.auto_parameters = turn_on;
+    }
+
+    void use_neighborhood_optimization(bool turn_on) // use the neighborhood optimization -> (See Cheeseman et. al. 2018), Default: on;
+    {
+        PipelinePars.neighborhood_optimization = turn_on;
+    }
+
     void write(std::string directory,std::string name){
         apr.write_apr(directory,name);
     }
 
-    int16_t *data() {return (int16_t*)reconstructedImage.mesh.get();}
-
-    int height() const {return apr.orginal_dimensions(1);}
-    int width() const {return apr.orginal_dimensions(0);}
-    int depth() const {return apr.orginal_dimensions(2);}
-    int numberParticles() const {return apr.total_number_particles();}
-
-    int timePoint() const {return currentTimePoint;}
-    int numberTimePoints() const {return totalTimePoints;}
 
 };
 
