@@ -10,7 +10,7 @@ import org.bytedeco.javacpp.annotation.Properties;
 import java.nio.ByteBuffer;
 import java.nio.ShortBuffer;
 
-@Properties( value = { @Platform(include = "APR.h", link = { "apr", "hdf5"}) })
+@Properties( value = { @Platform(include = "APR.h")})
 public class JavaAPR extends Pointer {
 
     // A 'must be' stuff for creating/destroying object
