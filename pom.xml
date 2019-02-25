@@ -25,6 +25,10 @@
     <properties>
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
+
+        <javacpp.cppbuild.skip>false</javacpp.cppbuild.skip> <!-- To skip execution of cppbuild.sh: -Djavacpp.cppbuild.skip=true -->
+        <javacpp.parser.skip>true</javacpp.parser.skip>     <!-- To skip header file parsing phase: -Djavacpp.parser.skip=true  -->
+        <javacpp.compiler.skip>false</javacpp.compiler.skip> <!-- To skip native compilation phase: -Djavacpp.compiler.skip=true -->
     </properties>
 
     <dependencies>
@@ -55,7 +59,6 @@
     </dependencies>
 
     <build>
-        <testSourceDirectory>src/test/java</testSourceDirectory>
         <!-- Detect platform: ${os.detected.classifier} -->
         <extensions>
             <extension>
@@ -125,6 +128,7 @@
                             <goal>exec</goal>
                         </goals>
                         <configuration>
+                            <skip>${javacpp.cppbuild.skip}</skip>
                             <executable>bash</executable>
                             <commandlineArgs>${project.basedir}/native/cppbuild.sh</commandlineArgs>
                             <workingDirectory>${project.basedir}/native</workingDirectory>
@@ -150,6 +154,7 @@
             <plugin>
                 <groupId>org.bytedeco</groupId>
                 <artifactId>javacpp</artifactId>
+                <version>1.4.1</version>
                 <configuration>
                     <classPath>${project.build.outputDirectory}</classPath>
                     <includePaths>
@@ -174,7 +179,7 @@
                             <goal>build</goal>
                         </goals>
                         <configuration>
-                            <skip>false</skip>
+                            <skip>${javacpp.parser.skip}</skip>
                             <outputDirectory>${project.build.sourceDirectory}</outputDirectory>
                             <classOrPackageName>mosaic.presets.AprLibConfig</classOrPackageName>
                         </configuration>
@@ -186,6 +191,7 @@
                             <goal>build</goal>
                         </goals>
                         <configuration>
+                            <skip>${javacpp.compiler.skip}</skip>
                             <classOrPackageNames>
                                 <classOrPackageName>mosaic.JavaAPR</classOrPackageName>
                                 <classOrPackageName>mosaic.LibApr</classOrPackageName>
