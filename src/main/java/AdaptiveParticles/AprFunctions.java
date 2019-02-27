@@ -1,4 +1,4 @@
-package mosaic;
+package AdaptiveParticles;
 
 import org.bytedeco.javacpp.ShortPointer;
 

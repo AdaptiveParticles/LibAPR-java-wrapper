@@ -1,4 +1,4 @@
-package mosaic;
+package AdaptiveParticles;
 
 import org.bytedeco.javacpp.Loader;
 import org.bytedeco.javacpp.Pointer;
