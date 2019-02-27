@@ -27,7 +27,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
 
         <javacpp.cppbuild.skip>false</javacpp.cppbuild.skip> <!-- To skip execution of cppbuild.sh: -Djavacpp.cppbuild.skip=true -->
-        <javacpp.parser.skip>true</javacpp.parser.skip>     <!-- To skip header file parsing phase: -Djavacpp.parser.skip=true  -->
+        <javacpp.parser.skip>false</javacpp.parser.skip>     <!-- To skip header file parsing phase: -Djavacpp.parser.skip=true  -->
         <javacpp.compiler.skip>false</javacpp.compiler.skip> <!-- To skip native compilation phase: -Djavacpp.compiler.skip=true -->
     </properties>
 
@@ -112,6 +112,39 @@
                         </lifecycleMappingMetadata>
                     </configuration>
                 </plugin>
+
+                <!-- Here we run parser and compiler for autmatically generated wrappers -->
+                <plugin>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>3.1.0</version>
+                    <executions>
+                        <execution>
+                            <id>javacpp.parser.resources</id>
+                            <phase>generate-sources</phase>
+                            <goals>
+                                <goal>resources</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.7.0</version>
+                    <executions>
+                        <execution>
+                            <id>javacpp.parser.presets</id>
+                            <phase>generate-sources</phase>
+                            <goals>
+                                <goal>compile</goal>
+                            </goals>
+                            <configuration>
+                                <includes>
+                                    <include>mosaic/presets/AprLibConfig.java</include>
+                                </includes>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
             </plugins>
         </pluginManagement>
 
@@ -174,7 +207,7 @@
                 <executions>
                     <execution>
                         <id>javacpp.parser</id>
-                        <phase>generate-sources</phase>
+                        <phase>process-sources</phase>
                         <goals>
                             <goal>build</goal>
                         </goals>
