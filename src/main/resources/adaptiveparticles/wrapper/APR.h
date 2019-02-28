@@ -72,6 +72,19 @@ public:
         return this;
     }
 
+    AprBasicOps* get16bitUnsignedAPRInternal(int width, int height, int depth, int bpp, uint16_t* buffer, const APRParameters parameters) {
+        PixelData<uint16_t> p = PixelData<uint16_t>(width, height, depth);
+        p.mesh.set(buffer, width*height*depth);
+
+        apr.parameters = parameters;
+        std::cout << apr.parameters << std::endl;
+
+        apr.get_apr(p);
+
+        return this;
+    }
+
+
     int16_t *data() {return (int16_t*)reconstructedImage.mesh.get();}
 
     int height() const {return apr.orginal_dimensions(1);}
