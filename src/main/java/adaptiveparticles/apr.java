@@ -123,7 +123,7 @@ public static class AprBasicOps extends Pointer {
     public native void saveAPR(@StdString BytePointer aDirectory, @StdString BytePointer aFileName);
     public native void saveAPR(@StdString String aDirectory, @StdString String aFileName);
 
-        public native @Cast("uint16_t*") @StdVector ShortPointer getVector();
+    public native @ByVal APRIterator iterator();
 
 }
 

@@ -84,11 +84,9 @@ public:
         std::cout << "Saved " << totalFileSize << " MB." << std::endl;
     }
 
-        std::vector<uint16_t> getVector() {
-            std::vector<uint16_t> v;
-            v.push_back(3);
-            return v;
-        }
+    APRIterator iterator() {
+        return apr.iterator();
+    }
 
 };
 
