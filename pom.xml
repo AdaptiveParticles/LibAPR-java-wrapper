@@ -4,7 +4,7 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <name>Java wrapper for LibAPR</name>
+    <name>Java adaptiveparticles.wrapper for LibAPR</name>
     <groupId>mosaic</groupId>
     <artifactId>libapr-java-wrapper</artifactId>
     <version>0.1.0-SNAPSHOT</version>
@@ -24,7 +24,7 @@
         <dependency>
             <groupId>org.bytedeco</groupId>
             <artifactId>javacpp</artifactId>
-            <version>1.4.1</version>
+            <version>1.4.4</version>
         </dependency>
     </dependencies>
 
@@ -109,7 +109,7 @@
                             </goals>
                             <configuration>
                                 <includes>
-                                    <include>AdaptiveParticles/presets/AprLibConfig.java</include>
+                                    <include>adaptiveparticles/wrapper/presets/AprLibConfig.java</include>
                                 </includes>
                             </configuration>
                         </execution>
@@ -164,12 +164,12 @@
                     <classPath>${project.build.outputDirectory}</classPath>
                     <includePaths>
                         <includePath>${project.build.sourceDirectory}</includePath>
+                        <includePath>${basedir}/src/main/resources/adaptiveparticles/wrapper</includePath>
                         <includePath>${basedir}/native/LibAPR/src/</includePath>
                         <includePath>${basedir}/native/LibAPR/build/</includePath>
                     </includePaths>
                     <linkPaths>
                         <linkPath>${basedir}/native/LibAPR/build/</linkPath>
-                        <!-- <linkPath>/usr/local/Cellar/hdf5/1.10.2_1/lib/</linkPath> -->
                     </linkPaths>
                     <copyLibs>true</copyLibs>
                     <compilerOptions>
@@ -186,7 +186,7 @@
                         <configuration>
                             <skip>${javacpp.parser.skip}</skip>
                             <outputDirectory>${project.build.sourceDirectory}</outputDirectory>
-                            <classOrPackageName>AdaptiveParticles.presets.AprLibConfig</classOrPackageName>
+                            <classOrPackageName>adaptiveparticles.wrapper.presets.AprLibConfig</classOrPackageName>
                         </configuration>
                     </execution>
                     <execution>
@@ -198,8 +198,7 @@
                         <configuration>
                             <skip>${javacpp.compiler.skip}</skip>
                             <classOrPackageNames>
-                                <classOrPackageName>AdaptiveParticles.JavaAPR</classOrPackageName>
-                                <classOrPackageName>AdaptiveParticles.LibApr</classOrPackageName>
+                                <classOrPackageName>adaptiveparticles.apr</classOrPackageName>
                             </classOrPackageNames>
                         </configuration>
                     </execution>

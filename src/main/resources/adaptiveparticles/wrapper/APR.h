@@ -6,14 +6,13 @@
 #include <cstdint>
 #include <iostream>
 
-class JavaAPR {
+class AprBasicOps {
     PixelData <uint16_t> reconstructedImage;
     APR <uint16_t> apr;
     APRTree<uint16_t> aprTree;
     ExtraParticleData<uint16_t> partsTree;
     
 public:
-    JavaAPR () {}
     void read(const std::string &aAprFileName) {
         apr.read_apr(aAprFileName);
         aprTree.init(apr);
@@ -53,7 +52,7 @@ public:
         memcpy( buffer, img.mesh.get(), 2 * width * height * depth );
     }
 
-    JavaAPR* get16bitUnsignedAPRInternal(int width, int height, int depth, int bpp, uint16_t* buffer) {
+    AprBasicOps* get16bitUnsignedAPRInternal(int width, int height, int depth, int bpp, uint16_t* buffer) {
         PixelData<uint16_t> p = PixelData<uint16_t>(width, height, depth);
         p.mesh.set(buffer, width*height*depth);
         apr.parameters.Ip_th = -1;
@@ -84,6 +83,13 @@ public:
         float totalFileSize = apr.write_apr(aDirectory, aFileName).total_file_size;
         std::cout << "Saved " << totalFileSize << " MB." << std::endl;
     }
+
+        std::vector<uint16_t> getVector() {
+            std::vector<uint16_t> v;
+            v.push_back(3);
+            return v;
+        }
+
 };
 
 #endif //__APR_H__
