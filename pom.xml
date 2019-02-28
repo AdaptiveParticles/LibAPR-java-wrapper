@@ -4,8 +4,8 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <name>Java adaptiveparticles.wrapper for LibAPR</name>
-    <groupId>mosaic</groupId>
+    <name>Java wrapper for LibAPR</name>
+    <groupId>adaptiveparticles</groupId>
     <artifactId>libapr-java-wrapper</artifactId>
     <version>0.1.0-SNAPSHOT</version>
 
@@ -24,7 +24,7 @@
         <dependency>
             <groupId>org.bytedeco</groupId>
             <artifactId>javacpp</artifactId>
-            <version>1.4.4</version>
+            <version>1.4.1</version>
         </dependency>
     </dependencies>
 
