@@ -6,19 +6,17 @@
 #include <cstdint>
 #include <iostream>
 
-class JavaAPR {
+class AprBasicOps {
     PixelData <uint16_t> reconstructedImage;
     APR <uint16_t> apr;
     APRTree<uint16_t> aprTree;
     ExtraParticleData<float> partsTree;
     
 public:
-    JavaAPR () {}
     void read(const std::string &aAprFileName) {
         apr.read_apr(aAprFileName);
         aprTree.init(apr);
-        //APRTreeNumerics::fill_tree_from_particles(apr,aprTree,apr.particles_intensities,partsTree,[] (const uint16_t& a,const uint16_t& b) {return std::max(a,b);});
-        APRTreeNumerics::fill_tree_mean(apr,aprTree,apr.particles_intensities,partsTree);
+	    APRTreeNumerics::fill_tree_mean(apr,aprTree,apr.particles_intensities,partsTree);
     }
 
     // Default values for min/max will reconstruct whole image
@@ -54,19 +52,55 @@ public:
         memcpy( buffer, img.mesh.get(), 2 * width * height * depth );
     }
 
-    JavaAPR* get16bitUnsignedAPRInternal(int width, int height, int depth, int bpp, uint16_t* buffer) {
+    AprBasicOps* get16bitUnsignedAPRInternal(int width, int height, int depth, int bpp, uint16_t* buffer) {
         PixelData<uint16_t> p = PixelData<uint16_t>(width, height, depth);
         p.mesh.set(buffer, width*height*depth);
+        apr.parameters.Ip_th = -1;
+        apr.parameters.SNR_min = -1;
+        apr.parameters.lambda = -1;
+        apr.parameters.min_signal = -1;
+        apr.parameters.rel_error = 0.1;
+        apr.parameters.sigma_th = 0;
+        apr.parameters.sigma_th_max = 0;
+
+        apr.parameters.normalized_input = false;
+        apr.parameters.neighborhood_optimization = true;
+        apr.parameters.auto_parameters = true;
+
         apr.get_apr(p);
 
         return this;
     }
+
+    AprBasicOps* get16bitUnsignedAPRInternal(int width, int height, int depth, int bpp, uint16_t* buffer, const APRParameters parameters) {
+        PixelData<uint16_t> p = PixelData<uint16_t>(width, height, depth);
+        p.mesh.set(buffer, width*height*depth);
+
+        apr.parameters = parameters;
+        std::cout << apr.parameters << std::endl;
+
+        apr.get_apr(p);
+
+        return this;
+    }
+
 
     int16_t *data() {return (int16_t*)reconstructedImage.mesh.get();}
 
     int height() const {return apr.orginal_dimensions(1);}
     int width() const {return apr.orginal_dimensions(0);}
     int depth() const {return apr.orginal_dimensions(2);}
+
+    void saveAPR(const std::string &aDirectory, const std::string &aFileName) {
+        std::cout << "Saving file: [" << aDirectory << "][" << aFileName << "]" << std::endl;
+        float totalFileSize = apr.write_apr(aDirectory, aFileName).total_file_size;
+        std::cout << "Saved " << totalFileSize << " MB." << std::endl;
+    }
+
+    APRIterator iterator() {
+        return apr.iterator();
+    }
+
 };
 
 #endif //__APR_H__

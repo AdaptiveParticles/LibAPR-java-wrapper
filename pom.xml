@@ -4,27 +4,20 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.scijava</groupId>
-        <artifactId>pom-scijava</artifactId>
-        <version>22.3.0</version>
-    </parent>
-
     <name>Java wrapper for LibAPR</name>
-    <groupId>mosaic</groupId>
+    <groupId>adaptiveparticles</groupId>
     <artifactId>libapr-java-wrapper</artifactId>
     <version>0.1.0-SNAPSHOT</version>
-
-    <repositories>
-        <repository>
-            <id>imagej.public</id>
-            <url>http://maven.imagej.net/content/groups/public</url>
-        </repository>
-    </repositories>
 
     <properties>
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <javacpp.cppbuild.skip>false</javacpp.cppbuild.skip> <!-- To skip execution of cppbuild.sh: -Djavacpp.cppbuild.skip=true -->
+        <javacpp.parser.skip>false</javacpp.parser.skip>     <!-- To skip header file parsing phase: -Djavacpp.parser.skip=true  -->
+        <javacpp.compiler.skip>false</javacpp.compiler.skip> <!-- To skip native compilation phase: -Djavacpp.compiler.skip=true -->
     </properties>
 
     <dependencies>
@@ -33,29 +26,9 @@
             <artifactId>javacpp</artifactId>
             <version>1.4.1</version>
         </dependency>
-        <dependency>
-            <groupId>sc.fiji</groupId>
-            <artifactId>bigdataviewer-vistools</artifactId>
-            <version>1.0.0-beta-11</version>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-	    <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.imagej</groupId>
-            <artifactId>imagej</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>net.imagej</groupId>
-            <artifactId>imagej-legacy</artifactId>
-        </dependency>
     </dependencies>
 
     <build>
-        <testSourceDirectory>src/test/java</testSourceDirectory>
         <!-- Detect platform: ${os.detected.classifier} -->
         <extensions>
             <extension>
@@ -109,6 +82,39 @@
                         </lifecycleMappingMetadata>
                     </configuration>
                 </plugin>
+
+                <!-- Here we run parser and compiler for autmatically generated wrappers -->
+                <plugin>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>3.1.0</version>
+                    <executions>
+                        <execution>
+                            <id>javacpp.parser.resources</id>
+                            <phase>generate-sources</phase>
+                            <goals>
+                                <goal>resources</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.7.0</version>
+                    <executions>
+                        <execution>
+                            <id>javacpp.parser.presets</id>
+                            <phase>generate-sources</phase>
+                            <goals>
+                                <goal>compile</goal>
+                            </goals>
+                            <configuration>
+                                <includes>
+                                    <include>adaptiveparticles/wrapper/presets/AprLibConfig.java</include>
+                                </includes>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
             </plugins>
         </pluginManagement>
 
@@ -117,6 +123,7 @@
             <plugin>
                 <artifactId>exec-maven-plugin</artifactId>
                 <groupId>org.codehaus.mojo</groupId>
+                <version>1.6.0</version>
                 <executions>
                     <execution>
                         <id>cppbuild</id>
@@ -125,6 +132,7 @@
                             <goal>exec</goal>
                         </goals>
                         <configuration>
+                            <skip>${javacpp.cppbuild.skip}</skip>
                             <executable>bash</executable>
                             <commandlineArgs>${project.basedir}/native/cppbuild.sh</commandlineArgs>
                             <workingDirectory>${project.basedir}/native</workingDirectory>
@@ -135,6 +143,7 @@
 
             <plugin>
                 <artifactId>maven-enforcer-plugin</artifactId>
+                <version>1.4.1</version>
                 <configuration>
                     <skip>true</skip>
                 </configuration>
@@ -150,6 +159,7 @@
             <plugin>
                 <groupId>org.bytedeco</groupId>
                 <artifactId>javacpp</artifactId>
+                <version>1.4.1</version>
                 <configuration>
           <propertyKeysAndValues>
             <property>
@@ -160,12 +170,12 @@
                     <classPath>${project.build.outputDirectory}</classPath>
                     <includePaths>
                         <includePath>${project.build.sourceDirectory}</includePath>
+                        <includePath>${basedir}/src/main/resources/adaptiveparticles/wrapper</includePath>
                         <includePath>${basedir}/native/LibAPR/src/</includePath>
                         <includePath>${basedir}/native/LibAPR/build/</includePath>
                     </includePaths>
                     <linkPaths>
                         <linkPath>${basedir}/native/LibAPR/build/</linkPath>
-                        <!-- <linkPath>/usr/local/Cellar/hdf5/1.10.2_1/lib/</linkPath> -->
                        <linkPath>/usr/local/opt/llvm/lib/</linkPath>
                     </linkPaths>
                     <copyLibs>true</copyLibs>
@@ -177,14 +187,27 @@
                 </configuration>
                 <executions>
                     <execution>
+                        <id>javacpp.parser</id>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                        <configuration>
+                            <skip>${javacpp.parser.skip}</skip>
+                            <outputDirectory>${project.build.sourceDirectory}</outputDirectory>
+                            <classOrPackageName>adaptiveparticles.wrapper.presets.AprLibConfig</classOrPackageName>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>process-classes</id>
                         <phase>process-classes</phase>
                         <goals>
                             <goal>build</goal>
                         </goals>
                         <configuration>
+                            <skip>${javacpp.compiler.skip}</skip>
                             <classOrPackageNames>
-                                <classOrPackageName>mosaic.JavaAPR</classOrPackageName>
+                                <classOrPackageName>adaptiveparticles.apr</classOrPackageName>
                             </classOrPackageNames>
                         </configuration>
                     </execution>
