@@ -10,7 +10,7 @@ class AprBasicOps {
     PixelData <uint16_t> reconstructedImage;
     APR <uint16_t> apr;
     APRTree<uint16_t> aprTree;
-    ExtraParticleData<float> partsTree;
+    ExtraParticleData<uint16_t> partsTree;
     
 public:
     void read(const std::string &aAprFileName) {
