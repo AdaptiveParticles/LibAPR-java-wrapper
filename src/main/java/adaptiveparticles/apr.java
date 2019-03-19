@@ -114,6 +114,11 @@ public static class AprBasicOps extends Pointer {
     public native AprBasicOps get16bitUnsignedAPRInternal(int width, int height, int depth, int bpp, @Cast("uint16_t*") ShortBuffer buffer);
     public native AprBasicOps get16bitUnsignedAPRInternal(int width, int height, int depth, int bpp, @Cast("uint16_t*") short[] buffer);
 
+    public native AprBasicOps get16bitUnsignedAPRInternal(int width, int height, int depth, int bpp, @Cast("uint16_t*") ShortPointer buffer, @Const @ByVal APRParameters parameters);
+    public native AprBasicOps get16bitUnsignedAPRInternal(int width, int height, int depth, int bpp, @Cast("uint16_t*") ShortBuffer buffer, @Const @ByVal APRParameters parameters);
+    public native AprBasicOps get16bitUnsignedAPRInternal(int width, int height, int depth, int bpp, @Cast("uint16_t*") short[] buffer, @Const @ByVal APRParameters parameters);
+
+
     public native ShortPointer data();
 
     public native int height();
@@ -123,7 +128,7 @@ public static class AprBasicOps extends Pointer {
     public native void saveAPR(@StdString BytePointer aDirectory, @StdString BytePointer aFileName);
     public native void saveAPR(@StdString String aDirectory, @StdString String aFileName);
 
-        public native @Cast("uint16_t*") @StdVector ShortPointer getVector();
+    public native @ByVal APRIterator iterator();
 
 }
 

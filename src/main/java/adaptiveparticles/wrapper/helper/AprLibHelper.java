@@ -82,5 +82,18 @@ public class AprLibHelper extends AprLibConfig {
             }
             return get16bitUnsignedAPRInternal(width, height, depth, bpp, p);
         }
+
+        public apr.AprBasicOps get16bitUnsignedAPR(int width, int height, int depth, int bpp, ShortBuffer buffer, apr.APRParameters parameters) {
+            ShortPointer p;
+            if(buffer.isDirect()) {
+                p = new ShortPointer(buffer);
+            } else {
+                ShortBuffer newBuffer = ByteBuffer.allocateDirect(buffer.capacity() * 2).asShortBuffer();
+                newBuffer.put(buffer);
+
+                p = new ShortPointer(newBuffer);
+            }
+            return get16bitUnsignedAPRInternal(width, height, depth, bpp, p, parameters);
+        }
     }
 }
