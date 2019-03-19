@@ -26,6 +26,12 @@
             <artifactId>javacpp</artifactId>
             <version>1.4.4</version>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -40,7 +46,7 @@
 
         <pluginManagement>
             <plugins>
-                <!--This plugin's configuration is used to store Eclipse 
+                <!--This plugin's configuration is used to store Eclipse
                     m2e settings only. It has no influence on the Maven build itself. -->
                 <plugin>
                     <groupId>org.eclipse.m2e</groupId>
@@ -200,6 +206,7 @@
                             <classOrPackageNames>
                                 <classOrPackageName>adaptiveparticles.apr</classOrPackageName>
                             </classOrPackageNames>
+                            <outputName>jniapr</outputName>
                         </configuration>
                     </execution>
                 </executions>
