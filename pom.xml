@@ -206,7 +206,7 @@
                             <classOrPackageNames>
                                 <classOrPackageName>adaptiveparticles.apr</classOrPackageName>
                             </classOrPackageNames>
-                            <outputName>jniapr</outputName>
+                            <!--<outputName>jniapr</outputName>-->
                         </configuration>
                     </execution>
                 </executions>
